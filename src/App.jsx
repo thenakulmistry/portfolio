@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import mostlyBackendImg from './assets/mostly_backend.png'
+import mostlyBackendWhiteImg from './assets/mostly-backend-white.png'
 import spotifyTUIImg from './assets/spotifyTUI.png'
 import gauriCooksImg from './assets/gauriCooks.png'
 import ponkeVideo from './assets/ponke-ponkesol.mp4'
@@ -10,11 +11,20 @@ import resumePhoto from './assets/resumephoto.jpg'
 function App() {
   const [hoveredProject, setHoveredProject] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
+  const [theme, setTheme] = useState('dark');
   
   const cursorDotRef = useRef(null);
   const cursorOutlineRef = useRef(null);
+  const projectImageRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,7 +39,11 @@ function App() {
       // Calculate offset from center
       const x = (e.clientX - window.innerWidth / 2) / 8;
       const y = (e.clientY - window.innerHeight / 2) / 8;
-      setCursorPos({ x, y });
+      
+      if (projectImageRef.current) {
+        projectImageRef.current.style.setProperty('--mouse-x', `${x}px`);
+        projectImageRef.current.style.setProperty('--mouse-y', `${y}px`);
+      }
 
       // Custom cursor position
       const posX = e.clientX;
@@ -86,11 +100,8 @@ function App() {
 
       {/* Centered Project Image */}
       <div 
+        ref={projectImageRef}
         className={`project-image-container ${hoveredProject ? 'visible' : ''}`}
-        style={{
-          '--mouse-x': `${cursorPos.x}px`,
-          '--mouse-y': `${cursorPos.y}px`
-        }}
       >
         {hoveredProject && (
           hoveredProject.video ? (
@@ -170,16 +181,22 @@ function App() {
         {/* Intro Section */}
         <div className={`intro-section ${hoveredProject ? 'hidden' : ''}`}>
           <h1 className="intro-line">Nakul Mistry</h1>
-                    <div className="role-container">
+          <div className="role-container">
             <p className="intro-line">Full Stack Developer</p>
-            <img src={mostlyBackendImg} alt="Mostly Backend" className="handwritten-img" />
+            <img 
+              src={theme === 'dark' ? mostlyBackendWhiteImg : mostlyBackendImg} 
+              alt="Mostly Backend" 
+              className="handwritten-img" 
+            />
           </div>
           
           <div className="social-links">
             <a href="https://github.com/thenakulmistry" target="_blank" rel="noopener noreferrer">GitHub</a>
             <a href="https://linkedin.com/in/nakul7" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             <a href="mailto:mistrynakul2001@gmail.com">Email</a>
-            {/* <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a> */}
+            <button onClick={toggleTheme} className="theme-toggle" aria-label="Toggle theme">
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
           </div>
         </div>
       </main>

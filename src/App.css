@@ -2,12 +2,52 @@
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   line-height: 1.5;
   font-weight: 400;
-  color: #1d1d1f;
-  background-color: #ffffff;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Default (Light) Theme */
+  --bg-base: hsla(180, 1%, 97%, 1);
+  --text-color: #1d1d1f;
+  --text-secondary: #86868b;
+  --link-color: #0066cc;
+  --link-hover: #004499;
+  --gradient-1: hsla(218, 98%, 94%, 1);
+  --gradient-2: hsla(39, 95%, 94%, 1);
+  --gradient-3: hsla(271, 77%, 94%, 1);
+  --gradient-4: hsla(197, 87%, 94%, 1);
+  --cursor-dot: #1d1d1f;
+  --cursor-outline-border: rgba(255, 255, 255, 0.4);
+  --cursor-outline-bg: rgba(255, 255, 255, 0.1);
+  --project-hover-bg: rgba(255, 255, 255, 0.3);
+  --project-hover-border: rgba(255, 255, 255, 0.4);
+  --project-hover-shadow: rgba(31, 38, 135, 0.07);
+  --image-shadow: rgba(0, 0, 0, 0.12);
+  --modal-overlay: rgba(255, 255, 255, 0.1);
+  --mobile-card-shadow: rgba(0, 0, 0, 0.1);
+}
+
+/* Dark Theme Override */
+[data-theme="dark"] {
+  --bg-base: hsla(220, 20%, 10%, 1);
+  --text-color: #ffffff;
+  --text-secondary: #a1a1a6;
+  --link-color: #2997ff;
+  --link-hover: #5fb0ff;
+  --gradient-1: hsla(218, 60%, 25%, 1);
+  --gradient-2: hsla(39, 60%, 25%, 1);
+  --gradient-3: hsla(271, 60%, 25%, 1);
+  --gradient-4: hsla(197, 60%, 25%, 1);
+  --cursor-dot: #ffffff;
+  --cursor-outline-border: rgba(255, 255, 255, 0.2);
+  --cursor-outline-bg: rgba(255, 255, 255, 0.05);
+  --project-hover-bg: rgba(255, 255, 255, 0.1);
+  --project-hover-border: rgba(255, 255, 255, 0.1);
+  --project-hover-shadow: rgba(0, 0, 0, 0.3);
+  --image-shadow: rgba(0, 0, 0, 0.5);
+  --modal-overlay: rgba(0, 0, 0, 0.6);
+  --mobile-card-shadow: rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -15,15 +55,17 @@ body {
   padding: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: hsla(180,1%,97%,1);
+  color: var(--text-color);
+  background-color: var(--bg-base);
   background-image:
-    radial-gradient(at 81% 65%, hsla(218,98%,94%,1) 0px, transparent 50%),
-    radial-gradient(at 95% 99%, hsla(39,95%,94%,1) 0px, transparent 50%),
-    radial-gradient(at 48% 26%, hsla(271,77%,94%,1) 0px, transparent 50%),
-    radial-gradient(at 75% 26%, hsla(197,87%,94%,1) 0px, transparent 50%);
+    radial-gradient(at 81% 65%, var(--gradient-1) 0px, transparent 50%),
+    radial-gradient(at 95% 99%, var(--gradient-2) 0px, transparent 50%),
+    radial-gradient(at 48% 26%, var(--gradient-3) 0px, transparent 50%),
+    radial-gradient(at 75% 26%, var(--gradient-4) 0px, transparent 50%);
   background-size: 500% 500%;
   animation: gradient 9s ease infinite;
   cursor: none; /* Hide default cursor */
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /* Force hide cursor on all interactive elements */
@@ -34,7 +76,7 @@ a, button, input, select, textarea, [role="button"] {
 .cursor-dot {
   width: 4px;
   height: 4px;
-  background-color: #1d1d1f;
+  background-color: var(--cursor-dot);
   position: fixed;
   top: 0;
   left: 0;
@@ -47,8 +89,8 @@ a, button, input, select, textarea, [role="button"] {
 .cursor-outline {
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--cursor-outline-border);
+  background: var(--cursor-outline-bg);
   backdrop-filter: blur(3px) brightness(1.1);
   -webkit-backdrop-filter: blur(3px) brightness(1.1);
   box-shadow: 0 0 15px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.1);
@@ -107,13 +149,13 @@ a, button, input, select, textarea, [role="button"] {
 
 .intro-line {
   margin: 0.4rem 0;
-  font-size: 1.7rem;
-  color: #1d1d1f;
+  font-size: 1.5rem;
+  color: var(--text-color);
   letter-spacing: -0.022em;
 }
 
 h1.intro-line {
-  font-size: 3.5rem;
+  font-size: 3.2rem;
   font-weight: 700;
   letter-spacing: -0.025em;
   margin-bottom: 0.5rem;
@@ -127,7 +169,7 @@ h1.intro-line {
 
 .social-links a {
   text-decoration: none;
-  color: #0066cc;
+  color: var(--link-color);
   font-size: 1.1rem;
   font-weight: 400;
   transition: all 0.2s ease;
@@ -135,7 +177,7 @@ h1.intro-line {
 }
 
 .social-links a:hover {
-  color: #004499;
+  color: var(--link-hover);
   transform: scale(1.1);
 }
 
@@ -143,15 +185,6 @@ h1.intro-line {
 .projects-section {
   flex: 0 0 auto;
   width: 300px;
-}
-
-.projects-title {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #86868b;
-  margin-bottom: 1rem;
-  font-weight: 600;
 }
 
 .projects-list {
@@ -167,7 +200,7 @@ h1.intro-line {
   padding: 0.8rem 1.2rem;
   border-radius: 16px;
   text-decoration: none;
-  color: #1d1d1f;
+  color: var(--text-color);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: none;
   background: transparent;
@@ -175,13 +208,13 @@ h1.intro-line {
 }
 
 .project-item:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: var(--project-hover-bg);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px 0 var(--project-hover-shadow);
+  border: 1px solid var(--project-hover-border);
   transform: scale(1.08);
-  color: #000;
+  color: var(--text-color);
 }
 
 .project-name {
@@ -192,7 +225,7 @@ h1.intro-line {
 
 .project-year {
   font-size: 0.9rem;
-  color: #86868b;
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -223,7 +256,7 @@ h1.intro-line {
   max-width: 100%;
   max-height: 100%;
   border-radius: 12px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 30px 60px var(--image-shadow);
   object-fit: cover;
 }
 
@@ -278,7 +311,7 @@ h1.intro-line {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--modal-overlay);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   z-index: 10000;
@@ -319,7 +352,7 @@ h1.intro-line {
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  color: #1d1d1f;
+  color: var(--text-color);
 }
 
 .mobile-preview-media {
@@ -327,7 +360,7 @@ h1.intro-line {
   border-radius: 12px;
   overflow: hidden;
   margin-bottom: 1rem;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px var(--mobile-card-shadow);
 }
 
 .mobile-preview-media img,
@@ -341,7 +374,7 @@ h1.intro-line {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #1d1d1f;
+  color: var(--text-color);
 }
 
 .mobile-project-link {
@@ -349,7 +382,7 @@ h1.intro-line {
   width: 100%;
   text-align: center;
   background: transparent;
-  color: #0066cc;
+  color: var(--link-color);
   padding: 0;
   text-decoration: none;
   font-weight: 400;
@@ -384,4 +417,17 @@ h1.intro-line {
   a, button, input, select, textarea, [role="button"] {
     cursor: pointer !important;
   }
+}
+
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.2s ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
 }
