@@ -12,7 +12,7 @@ function App() {
   const [hoveredProject, setHoveredProject] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   
   const cursorDotRef = useRef(null);
   const cursorOutlineRef = useRef(null);
@@ -63,8 +63,25 @@ function App() {
       }
     };
 
+    const handleMouseDown = () => {
+      if (cursorOutlineRef.current)
+        cursorOutlineRef.current.classList.add('cursor-active');
+    };
+
+    const handleMouseUp = () => {
+      if (cursorOutlineRef.current)
+        cursorOutlineRef.current.classList.remove('cursor-active');
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
   }, []);
 
   const projects = [
