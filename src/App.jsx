@@ -3,10 +3,11 @@ import './App.css'
 import mostlyBackendImg from './assets/mostly_backend.png'
 import mostlyBackendWhiteImg from './assets/mostly-backend-white.png'
 import spotifyTUIImg from './assets/spotifyTUI.png'
-import gauriCooksImg from './assets/gauriCooks.png'
+import gauriCooksImg from './assets/gauricooks.png'
 import ponkeVideo from './assets/ponke-ponkesol.mp4'
 import resumePdf from './assets/resume.pdf'
-import resumePhoto from './assets/resumephoto.jpg'
+import resumePhoto from './assets/resumephoto.png'
+import brainCacheImg from './assets/braincache.png'
 
 function App() {
   const [hoveredProject, setHoveredProject] = useState(null);
@@ -88,7 +89,7 @@ function App() {
     {
       name: "Gauri Cooks",
       year: "2025",
-      link: "https://github.com/thenakulmistry/chefV1",
+      link: "https://www.gauricooks.com",
       image: gauriCooksImg
     },
     {
@@ -102,6 +103,12 @@ function App() {
       year: "2025",
       link: "https://github.com/thenakulmistry/RetroTrade",
       video: ponkeVideo
+    },
+    {
+      name: "Brain Cache",
+      year: "2026",
+      link: "https://brain-cache-frontend.vercel.app/",
+      image: brainCacheImg
     },
     {
       name: "Resume",
