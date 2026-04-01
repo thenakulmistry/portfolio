@@ -15,9 +15,8 @@ function App() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000);
   const [theme, setTheme] = useState('light');
   
-  const cursorDotRef = useRef(null);
-  const cursorOutlineRef = useRef(null);
   const projectImageRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -45,45 +44,111 @@ function App() {
         projectImageRef.current.style.setProperty('--mouse-x', `${x}px`);
         projectImageRef.current.style.setProperty('--mouse-y', `${y}px`);
       }
-
-      // Custom cursor position
-      const posX = e.clientX;
-      const posY = e.clientY;
-
-      if (cursorDotRef.current) {
-        cursorDotRef.current.style.left = `${posX}px`;
-        cursorDotRef.current.style.top = `${posY}px`;
-      }
-      
-      if (cursorOutlineRef.current) {
-        // Using animate for smoother trailing effect without CSS transition lag on rapid movement
-        cursorOutlineRef.current.animate({
-          left: `${posX}px`,
-          top: `${posY}px`
-        }, { duration: 500, fill: "forwards" });
-      }
-    };
-
-    const handleMouseDown = () => {
-      if (cursorOutlineRef.current)
-        cursorOutlineRef.current.classList.add('cursor-active');
-    };
-
-    const handleMouseUp = () => {
-      if (cursorOutlineRef.current)
-        cursorOutlineRef.current.classList.remove('cursor-active');
     };
 
     window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
+
+  // Dots animation effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let mouse = { x: -1000, y: -1000 };
+    let lastMouseMoveTime = 0;
+    let activityMultiplier = 0;
+
+    const handleMouseMove = (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+      lastMouseMoveTime = Date.now();
+    };
+    
+    // For smooth lerping
+    let currentDots = [];
+    let isInitialized = false;
+
+    const initDots = () => {
+      currentDots = [];
+      const spacing = 20; // Decreased from 40 for more dots
+      for (let x = 0; x < canvas.width; x += spacing) {
+        for (let y = 0; y < canvas.height; y += spacing) {
+          currentDots.push({ x, y, baseX: x, baseY: y });
+        }
+      }
+      isInitialized = true;
+    };
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initDots();
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const isDark = theme === 'dark';
+      
+      // Use subtle colors that don't get in the way of reading
+      const baseR = isDark ? 150 : 120;
+      const baseG = isDark ? 150 : 130;
+      const baseB = isDark ? 160 : 150;
+      
+      const maxDist = 150;
+      
+      const now = Date.now();
+      const timeSinceLastMove = now - lastMouseMoveTime;
+      const targetMultiplier = timeSinceLastMove > 50 ? 0 : 1;
+      
+      // Smoothly transition the activity multiplier
+      activityMultiplier += (targetMultiplier - activityMultiplier) * 0.1;
+      
+      currentDots.forEach(dot => {
+        const dx = dot.baseX - mouse.x;
+        const dy = dot.baseY - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        
+        // Slightly bigger base radius and base opacity to be visible without interaction
+        let radius = 0.4; 
+        let opacity = 0.4; 
+        let yOffset = 0;
+        
+        if (dist < maxDist) {
+          const effect = ((maxDist - dist) / maxDist) * activityMultiplier; // 0 to 1 scaled by activity
+          radius += effect * 1.5; // Scale up
+          opacity += effect * 0.7; // Light up
+          yOffset = effect * -10; // Raise up
+        }
+        
+        // Lerp position for smooth movement
+        dot.y += ((dot.baseY + yOffset) - dot.y) * 0.1;
+        
+        ctx.fillStyle = `rgba(${baseR}, ${baseG}, ${baseB}, ${opacity})`;
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      
+      animationFrameId = requestAnimationFrame(draw);
+    };
+    
+    draw();
+    
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, [theme]);
 
   const projects = [
     {
@@ -119,8 +184,19 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="cursor-dot" ref={cursorDotRef}></div>
-      <div className="cursor-outline" ref={cursorOutlineRef}></div>
+      {/* Background Dots Canvas */}
+      <canvas 
+        ref={canvasRef} 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 0
+        }}
+      />
 
       {/* Centered Project Image */}
       <div 
